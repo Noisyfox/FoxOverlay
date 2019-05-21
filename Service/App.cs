@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 
 namespace Service
 {
-    class App: Application
+    internal class App : Application
     {
         /// <summary>
         /// InitializeComponent
@@ -17,11 +18,22 @@ namespace Service
         /// Application Entry Point.
         /// </summary>
         [STAThread]
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
-            var app = new App();
-            app.InitializeComponent();
-            app.Run();
+            using (var mutex = new Mutex(false, "Global\\FoxOverlay_Service_Mutex"))
+            {
+                // Don't allow running multiple service instance
+                if (!mutex.WaitOne(0, false))
+                {
+                    return -1;
+                }
+
+                var app = new App();
+                app.InitializeComponent();
+                app.Run();
+            }
+
+            return 0;
         }
     }
 }
