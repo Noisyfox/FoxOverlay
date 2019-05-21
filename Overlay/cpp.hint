@@ -1,0 +1,2 @@
+#define OVERLAY_API __declspec(dllexport)
+#define OVERLAY_API __declspec(dllimport)
