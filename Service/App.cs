@@ -28,9 +28,14 @@ namespace Service
                     return -1;
                 }
 
-                var app = new App();
-                app.InitializeComponent();
-                app.Run();
+                using (var cfg = new GlobalConfiguration.Builder().Build())
+                {
+                    cfg.Activate();
+
+                    var app = new App();
+                    app.InitializeComponent();
+                    app.Run();
+                }
             }
 
             return 0;
