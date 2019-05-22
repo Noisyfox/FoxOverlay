@@ -166,6 +166,8 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Endianness.h" />
+    <ClInclude Include="MemoryBinaryReader.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FuncExport.h" />
     <ClInclude Include="GlobalConfiguration.h" />
@@ -175,6 +177,7 @@
     <ClInclude Include="WinMutex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MemoryBinaryReader.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GlobalConfiguration.cpp" />
     <ClCompile Include="inject_entrance.cpp" />

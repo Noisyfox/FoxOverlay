@@ -39,6 +39,12 @@
     <ClInclude Include="WinMutex.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="MemoryBinaryReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Endianness.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Overlay.cpp">
@@ -57,6 +63,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinMutex.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryBinaryReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
