@@ -2,6 +2,8 @@
 #include "WinMutex.h"
 #include <mutex>
 #include "scope_guard.hpp"
+#include "MemoryBinaryReader.h"
+#include <vector>
 
 
 // Make sure to be consistent with constants in GlobalConfiguration.cs file
@@ -38,8 +40,28 @@ std::shared_ptr<GlobalConfiguration> GlobalConfiguration::load()
 		CloseHandle(hMap);
 	});
 
-	// TODO: read the config
+	// Read the config
+	MemoryBinaryReader reader(pBuffer, 8);
 
+	// Check the version first
+	const auto ullVersion = reader.read_le<ULONGLONG>();
+	if(ullVersion != VERSION)
+	{
+		OutputDebugString(_T("Wrong global configuration version\n"));
+
+		return nullptr;
+	}
+
+	// Read the size
+	reader.resize(16);
+	const auto ullContentSize = reader.read_le<ULONGLONG>();
+
+	// Read the configuration content
+	reader.resize(16 + ullContentSize);
+	std::vector<CHAR> strContentInUtf8(ullContentSize);
+	reader.read(strContentInUtf8.data(), ullContentSize);
+
+	// TODO: utf-8 to unicode
 
 	return nullptr;
 }
