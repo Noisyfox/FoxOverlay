@@ -59,20 +59,28 @@ namespace Service
             var sharedMemSize = 8L + 8L + cfgBytes.Length;
 
             // Acquire the exclusive ownership of the shared memory
-            using (var mutex = new Mutex(true, SHARED_MEM_MUTEX_NAME))
+            using (var mutex = new Mutex(false, SHARED_MEM_MUTEX_NAME))
             {
-                // Create the shared memory
-                var file = MemoryMappedFile.CreateNew(SHARED_MEM_NAME, sharedMemSize);
-                _sharedMemory = file;
-
-                // Write config
-                using (var stream = file.CreateViewStream())
+                mutex.WaitOne();
+                try
                 {
-                    // Write data in little-endian
-                    var writer = new BinaryWriter(stream);
-                    writer.Write(Version);
-                    writer.Write((ulong) cfgBytes.Length);
-                    writer.Write(cfgBytes);
+                    // Create the shared memory
+                    var file = MemoryMappedFile.CreateNew(SHARED_MEM_NAME, sharedMemSize);
+                    _sharedMemory = file;
+
+                    // Write config
+                    using (var stream = file.CreateViewStream())
+                    {
+                        // Write data in little-endian
+                        var writer = new BinaryWriter(stream);
+                        writer.Write(Version);
+                        writer.Write((ulong) cfgBytes.Length);
+                        writer.Write(cfgBytes);
+                    }
+                }
+                finally
+                {
+                    mutex.ReleaseMutex();
                 }
             }
         }
@@ -80,10 +88,18 @@ namespace Service
         public void Dispose()
         {
             // Acquire the exclusive ownership of the shared memory
-            using (var mutex = new Mutex(true, SHARED_MEM_MUTEX_NAME))
+            using (var mutex = new Mutex(false, SHARED_MEM_MUTEX_NAME))
             {
-                _sharedMemory?.Dispose();
-                _sharedMemory = null;
+                mutex.WaitOne();
+                try
+                {
+                    _sharedMemory?.Dispose();
+                    _sharedMemory = null;
+                }
+                finally
+                {
+                    mutex.ReleaseMutex();
+                }
             }
         }
 

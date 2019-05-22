@@ -1,4 +1,6 @@
 #include "GlobalConfiguration.h"
+#include "WinMutex.h"
+#include <mutex>
 
 
 // Make sure to be consistent with constants in GlobalConfiguration.cs file
@@ -8,7 +10,10 @@ static const LPCTSTR SHARED_MEM_MUTEX_NAME = _T("Global\\FoxOverlay_Configuratio
 std::shared_ptr<GlobalConfiguration> GlobalConfiguration::load()
 {
 	OutputDebugString(_T("Loading global configuration...\n"));
-	// TODO: Acquire the mutex before open the shared memory
+
+	// Acquire the mutex before open the shared memory
+	WinMutex mutex(false, SHARED_MEM_MUTEX_NAME);
+	std::lock_guard<WinMutex> lock(mutex);
 
 	auto hMap = OpenFileMapping(FILE_MAP_READ, FALSE, SHARED_MEM_NAME);
 	if (!hMap)

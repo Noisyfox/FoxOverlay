@@ -172,6 +172,7 @@
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="scope_guard.hpp" />
     <ClInclude Include="Session.h" />
+    <ClInclude Include="WinMutex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="inject_entrance.cpp" />
     <ClCompile Include="Overlay.cpp" />
     <ClCompile Include="Session.cpp" />
+    <ClCompile Include="WinMutex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

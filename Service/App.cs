@@ -28,13 +28,20 @@ namespace Service
                     return -1;
                 }
 
-                using (var cfg = new GlobalConfiguration.Builder().Build())
+                try
                 {
-                    cfg.Activate();
+                    using (var cfg = new GlobalConfiguration.Builder().Build())
+                    {
+                        cfg.Activate();
 
-                    var app = new App();
-                    app.InitializeComponent();
-                    app.Run();
+                        var app = new App();
+                        app.InitializeComponent();
+                        app.Run();
+                    }
+                }
+                finally
+                {
+                    mutex.ReleaseMutex();
                 }
             }
 
