@@ -4,13 +4,20 @@
 #include "scope_guard.hpp"
 #include "MemoryBinaryReader.h"
 #include <vector>
+#include "json11.hpp"
 
+using namespace json11;
 
 // Make sure to be consistent with constants in GlobalConfiguration.cs file
 static const LPCTSTR SHARED_MEM_NAME = _T("Global\\FoxOverlay_Configuration");
 static const LPCTSTR SHARED_MEM_MUTEX_NAME = _T("Global\\FoxOverlay_Configuration_Mutex");
 
 static const ULONGLONG VERSION = 1ULL;
+
+GlobalConfiguration::GlobalConfiguration(const UINT32 ipcPort)
+	: ipcPort(ipcPort)
+{
+}
 
 std::shared_ptr<GlobalConfiguration> GlobalConfiguration::load()
 {
@@ -45,7 +52,7 @@ std::shared_ptr<GlobalConfiguration> GlobalConfiguration::load()
 
 	// Check the version first
 	const auto ullVersion = reader.read_le<ULONGLONG>();
-	if(ullVersion != VERSION)
+	if (ullVersion != VERSION)
 	{
 		OutputDebugString(_T("Wrong global configuration version\n"));
 
@@ -58,10 +65,26 @@ std::shared_ptr<GlobalConfiguration> GlobalConfiguration::load()
 
 	// Read the configuration content
 	reader.resize(16 + ullContentSize);
-	std::vector<CHAR> strContentInUtf8(ullContentSize);
-	reader.read(strContentInUtf8.data(), ullContentSize);
+	std::vector<CHAR> vTmpBuffer(ullContentSize);
+	reader.read(vTmpBuffer.data(), ullContentSize);
 
-	// TODO: utf-8 to unicode
+	// Load the content as std::string
+	std::string strInUtf8(vTmpBuffer.data(), ullContentSize);
 
-	return nullptr;
+	// Parse Json
+	std::string err;
+	const auto json = Json::parse(strInUtf8, err);
+	if (!err.empty() || json.is_null())
+	{
+		OutputDebugString(_T("Unable to parse the global configuration: "));
+		OutputDebugStringA(err.c_str());
+		OutputDebugString(_T("\n"));
+
+		return nullptr;
+	}
+
+	// TODO: handle error such as property missing
+	UINT32 ipcPort = json["IpcPort"].int_value();
+
+	return std::make_shared<GlobalConfiguration>(ipcPort);
 }

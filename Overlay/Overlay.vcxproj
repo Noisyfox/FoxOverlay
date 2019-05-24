@@ -167,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Endianness.h" />
+    <ClInclude Include="json11.hpp" />
     <ClInclude Include="MemoryBinaryReader.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FuncExport.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="WinMutex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="json11.cpp" />
     <ClCompile Include="MemoryBinaryReader.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GlobalConfiguration.cpp" />
