@@ -9,7 +9,7 @@
 LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	// Check and start hook thread
-	Overlay::instance().startup();
+	Overlay::instance()->startup();
 
 	return CallNextHookEx(nullptr, nCode, wParam, lParam);
 }
@@ -81,7 +81,7 @@ bool InstallHook(const DWORD dwProcId, DWORD dwThreadId)
 	}
 
 	printf("Try hooking pid: %lu, thread: %lu\n", dwProcId, dwThreadId);
-	const auto hook = SetWindowsHookEx(WH_GETMESSAGE, HookProc, Overlay::instance().getModuleHandle(), dwThreadId);
+	const auto hook = SetWindowsHookEx(WH_GETMESSAGE, HookProc, Overlay::instance()->getModuleHandle(), dwThreadId);
 	if (!hook)
 	{
 		fprintf(stderr, "SetWindowsHookEx failed, GetLastError = %lu\n", GetLastError());

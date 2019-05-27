@@ -69,7 +69,7 @@ std::shared_ptr<GlobalConfiguration> GlobalConfiguration::load()
 	reader.read(vTmpBuffer.data(), ullContentSize);
 
 	// Load the content as std::string
-	std::string strInUtf8(vTmpBuffer.data(), ullContentSize);
+	const std::string strInUtf8(vTmpBuffer.data(), ullContentSize);
 
 	// Parse Json
 	std::string err;

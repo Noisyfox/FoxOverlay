@@ -5,6 +5,7 @@
 #include <mutex>
 
 class Overlay;
+class EventLoop;
 
 class Session
 {
@@ -16,10 +17,12 @@ private:
 	const HMODULE moduleHandle_;
 
 	std::shared_ptr<GlobalConfiguration> configuration_;
-
 	HANDLE sessionThread_ = nullptr;
+	std::shared_ptr<EventLoop> ev_;
 
-	Session(Overlay* owner);
+	HWND gameWindow_ = nullptr;
+
+	explicit Session(Overlay* owner);
 
 	friend DWORD WINAPI SessionThread(_In_ LPVOID);
 	DWORD runThread();
@@ -27,6 +30,8 @@ private:
 	bool isAlive() const;
 
 	void shutdownAndWait();
+
+	bool findGameWindow();
 public:
 	~Session();
 };

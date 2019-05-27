@@ -11,19 +11,21 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 		DisableThreadLibraryCalls(hModule);
+		Overlay::prepareInstance();
 
-		Overlay::instance().setModuleHandle(hModule);
+		Overlay::instance()->setModuleHandle(hModule);
 		break;
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 		break;
 	case DLL_PROCESS_DETACH:
-		if (Overlay::instance().shutdown())
+		if (Overlay::instance()->shutdown())
 		{
 #ifdef _DEBUG
 			MessageBox(nullptr, _T("DLL_PROCESS_DETACH"), _T(""), MB_OK);
 #endif
 		}
+		Overlay::freeInstance();
 		break;
 	}
 	return TRUE;

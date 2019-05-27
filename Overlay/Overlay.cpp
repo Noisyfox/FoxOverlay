@@ -1,16 +1,26 @@
 ﻿#include "Overlay.h"
 #include "Session.h"
 
+static std::shared_ptr<Overlay> g_instance(nullptr);
+
 Overlay::Overlay():
 	dwProcId_(GetCurrentProcessId())
 {
 }
 
-Overlay& Overlay::instance()
+void Overlay::prepareInstance()
 {
-	static Overlay overlay;
+	g_instance.reset(new Overlay());
+}
 
-	return overlay;
+std::shared_ptr<Overlay> Overlay::instance()
+{
+	return g_instance;
+}
+
+void Overlay::freeInstance()
+{
+	g_instance.reset();
 }
 
 bool Overlay::setModuleHandle(const HMODULE hModule)

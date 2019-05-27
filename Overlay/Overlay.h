@@ -2,7 +2,8 @@
 
 #include "framework.h"
 #include <mutex>
-#include "Session.h"
+
+class Session;
 
 class Overlay
 {
@@ -18,7 +19,9 @@ private:
 	Overlay();
 
 public:
-	static Overlay& instance();
+	static void prepareInstance();
+	static std::shared_ptr<Overlay> instance();
+	static void freeInstance();
 
 	bool setModuleHandle(HMODULE);
 	HMODULE getModuleHandle() const;
