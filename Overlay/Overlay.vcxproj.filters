@@ -14,6 +14,18 @@
     <Filter Include="main\overlay">
       <UniqueIdentifier>{a597fcb9-a45c-418b-b8a5-0ba6dc3dccb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="main\graphic">
+      <UniqueIdentifier>{0df95613-9ed6-4369-ace5-2c10746ad885}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main\graphic\dxgi">
+      <UniqueIdentifier>{b65033cf-2abd-41c8-a11d-fae02a12fd0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main\graphic\dxgi\d3d11">
+      <UniqueIdentifier>{c616fe0b-3189-4b16-abbc-b2a44c5b6d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main\graphic\d3d9">
+      <UniqueIdentifier>{7412b306-9577-443c-b8ca-e2cb1e995199}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -52,6 +64,24 @@
     <ClInclude Include="EventLoop.h">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="DXGIHook.h">
+      <Filter>main\graphic\dxgi</Filter>
+    </ClInclude>
+    <ClInclude Include="dxgi_def.h">
+      <Filter>main\graphic\dxgi</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11Hook.h">
+      <Filter>main\graphic\dxgi\d3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="graphic_util.h">
+      <Filter>main\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="DXGISwapChainHook.h">
+      <Filter>main\graphic\dxgi</Filter>
+    </ClInclude>
+    <ClInclude Include="IUnknownPtr.h">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="json11.cpp">
@@ -80,6 +110,18 @@
     </ClCompile>
     <ClCompile Include="EventLoop.cpp">
       <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="DXGIHook.cpp">
+      <Filter>main\graphic\dxgi</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11Hook.cpp">
+      <Filter>main\graphic\dxgi\d3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="graphic_util.cpp">
+      <Filter>main\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="DXGISwapChainHook.cpp">
+      <Filter>main\graphic\dxgi</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

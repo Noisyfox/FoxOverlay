@@ -172,8 +172,14 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="D3D11Hook.h" />
+    <ClInclude Include="DXGIHook.h" />
+    <ClInclude Include="DXGISwapChainHook.h" />
+    <ClInclude Include="dxgi_def.h" />
     <ClInclude Include="Endianness.h" />
     <ClInclude Include="EventLoop.h" />
+    <ClInclude Include="graphic_util.h" />
+    <ClInclude Include="IUnknownPtr.h" />
     <ClInclude Include="json11.hpp" />
     <ClInclude Include="MemoryBinaryReader.h" />
     <ClInclude Include="framework.h" />
@@ -185,7 +191,11 @@
     <ClInclude Include="WinMutex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D11Hook.cpp" />
+    <ClCompile Include="DXGIHook.cpp" />
+    <ClCompile Include="DXGISwapChainHook.cpp" />
     <ClCompile Include="EventLoop.cpp" />
+    <ClCompile Include="graphic_util.cpp" />
     <ClCompile Include="json11.cpp" />
     <ClCompile Include="MemoryBinaryReader.cpp" />
     <ClCompile Include="dllmain.cpp" />
