@@ -66,18 +66,6 @@ DWORD Session::runThread()
 		EXIT_THREAD(1);
 	}
 
-	// TODO: connect to service
-
-	// TODO: see if service ask us to hook a given window
-
-	// Otherwise try finding a window
-	// if (!findGameWindow())
-	// {
-	// 	EXIT_THREAD(2);
-	// }
-
-	// Hook the window
-
 	if (ev_->prepareExitHandle())
 	{
 		EXIT_THREAD(0);
@@ -91,6 +79,33 @@ DWORD Session::runThread()
 		shutdownAndWait();
 	});
 	t->start(uvw::TimerHandle::Time{10000}, uvw::TimerHandle::Time{0});
+
+	// TODO: connect to service
+
+	auto windowInjectHandle = ev_->loop()->resource<uvw::TimerHandle>();
+	windowInjectHandle->data(this->shared_from_this());
+	windowInjectHandle->on<uvw::TimerEvent>([](const uvw::TimerEvent&, uvw::TimerHandle& h)
+	{
+		if (h.closing())
+		{
+			return;
+		}
+
+		auto session = h.data<Session>();
+
+		// TODO: see if service ask us to hook a given window
+
+		// Otherwise try finding a window
+		if (!session->findGameWindow())
+		{
+			// Schedule for next run after 5s
+			h.start(uvw::TimerHandle::Time{5000}, uvw::TimerHandle::Time{0});
+		}
+
+		// Hook the window
+	});
+	// Run immediately
+	windowInjectHandle->start(uvw::TimerHandle::Time{0}, uvw::TimerHandle::Time{0});
 
 	ev_->run();
 

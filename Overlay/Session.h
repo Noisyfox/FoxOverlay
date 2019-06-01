@@ -7,7 +7,7 @@
 class Overlay;
 class EventLoop;
 
-class Session
+class Session : public std::enable_shared_from_this<Session>
 {
 private:
 	std::mutex stateLock_;
