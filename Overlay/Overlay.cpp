@@ -44,7 +44,7 @@ void Overlay::startup()
 	if (currentSession_ == nullptr || !currentSession_->isAlive())
 	{
 		// Start new hook session
-		currentSession_.reset(new Session(this));
+		currentSession_.reset(new Session(this->shared_from_this()));
 	}
 }
 

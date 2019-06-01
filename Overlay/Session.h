@@ -13,7 +13,7 @@ private:
 	std::mutex stateLock_;
 
 	friend class Overlay;
-	Overlay* const owner_;
+	std::weak_ptr<Overlay> const owner_;
 	const HMODULE moduleHandle_;
 
 	std::shared_ptr<GlobalConfiguration> configuration_;
@@ -22,7 +22,7 @@ private:
 
 	HWND gameWindow_ = nullptr;
 
-	explicit Session(Overlay* owner);
+	explicit Session(std::shared_ptr<Overlay> owner);
 
 	friend DWORD WINAPI SessionThread(_In_ LPVOID);
 	DWORD runThread();

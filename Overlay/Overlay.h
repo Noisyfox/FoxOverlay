@@ -5,7 +5,7 @@
 
 class Session;
 
-class Overlay
+class Overlay : public std::enable_shared_from_this<Overlay>
 {
 private:
 	std::mutex overlayStateLock_;

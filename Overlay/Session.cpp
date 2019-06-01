@@ -10,7 +10,7 @@ DWORD WINAPI SessionThread(_In_ LPVOID lpParam)
 	return session->runThread();
 }
 
-Session::Session(Overlay* owner):
+Session::Session(const std::shared_ptr<Overlay> owner):
 	owner_(owner),
 	moduleHandle_(owner->getModuleHandle()),
 	ev_(new EventLoop)
