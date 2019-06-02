@@ -182,6 +182,7 @@
     <ClInclude Include="dxgi_def.h" />
     <ClInclude Include="Endianness.h" />
     <ClInclude Include="EventLoop.h" />
+    <ClInclude Include="FunctionWrapper.h" />
     <ClInclude Include="graphic_util.h" />
     <ClInclude Include="IUnknownPtr.h" />
     <ClInclude Include="json11.hpp" />
