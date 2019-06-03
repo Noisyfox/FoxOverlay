@@ -7,6 +7,10 @@
 
 #include <stdexcept>
 
+#define FUNC_WRAPPER_REGISTER_ENUM_TYPE(T) \
+	static_assert(std::is_enum<T>::value, "Type " #T " is not an enum!"); \
+	namespace asmjit { template <> struct TypeIdOf<T> { enum { kTypeId = TypeIdOfInt<T>::kTypeId }; }; }
+
 #define FUNC_WRAPPER_DEFINE_CALL_CONV(NAME, ASMJIT_CONV) \
 	struct NAME { enum { kCallConv = asmjit::CallConv::ASMJIT_CONV }; };
 
