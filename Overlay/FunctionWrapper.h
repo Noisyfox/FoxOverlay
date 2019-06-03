@@ -7,15 +7,53 @@
 
 #include <stdexcept>
 
+#define FUNC_WRAPPER_DEFINE_CALL_CONV(NAME, ASMJIT_CONV) \
+	struct NAME { enum { kCallConv = asmjit::CallConv::ASMJIT_CONV }; };
+
+struct CallingConvs
+{
+	FUNC_WRAPPER_DEFINE_CALL_CONV(kCdecl, kIdHostCDecl);
+
+	FUNC_WRAPPER_DEFINE_CALL_CONV(kStdcall, kIdHostStdCall);
+};
+
+#undef FUNC_WRAPPER_DEFINE_CALL_CONV
+
 template <
+	typename CallConv,
+	typename UserDataType,
+	typename ReturnType,
+	typename... ArgumentType
+>
+struct FuncType
+{
+	// Don't provide anything if not specialized.
+};
+
+#define FUNC_WRAPPER_DEFINE_FUNC_TYPE(T, CALL_CONV) \
+	template<typename UserDataType, typename ReturnType, typename... ArgumentType> \
+	struct FuncType<T, UserDataType, ReturnType, ArgumentType...> \
+	{ \
+		using TargetFuncType = ReturnType(CALL_CONV *)(UserDataType, ArgumentType ...); \
+		using WrappedFuncType = ReturnType(CALL_CONV *)(ArgumentType ...); \
+	}
+
+FUNC_WRAPPER_DEFINE_FUNC_TYPE(CallingConvs::kCdecl, __cdecl);
+
+FUNC_WRAPPER_DEFINE_FUNC_TYPE(CallingConvs::kStdcall, __stdcall);
+
+#undef FUNC_WRAPPER_DEFINE_FUNC_TYPE
+
+template <
+	typename CallConv,
 	typename UserDataType,
 	typename ReturnType,
 	typename... ArgumentType
 >
 class FuncWrapper
 {
-	using TargetFuncType = ReturnType(*)(UserDataType, ArgumentType ...);
-	using WrappedFuncType = ReturnType(*)(ArgumentType ...);
+	using TargetFuncType = typename FuncType<CallConv, UserDataType, ReturnType, ArgumentType...>::TargetFuncType;
+	using WrappedFuncType = typename FuncType<CallConv, UserDataType, ReturnType, ArgumentType...>::WrappedFuncType;
 
 private:
 	const TargetFuncType targetFn_;
@@ -23,12 +61,10 @@ private:
 	asmjit::JitRuntime rt_;
 
 	UserDataType userData_{};
+
 public:
-
-
 	FuncWrapper(
-		TargetFuncType pTargetFn,
-		uint32_t callConv
+		TargetFuncType pTargetFn
 	) : targetFn_(pTargetFn)
 	{
 		// Initialize CodeHolder
@@ -39,7 +75,7 @@ public:
 		asmjit::X86Compiler cc(&code);
 
 		// Begin the forward function
-		asmjit::FuncSignatureT<ReturnType, ArgumentType...> sig(callConv);
+		asmjit::FuncSignatureT<ReturnType, ArgumentType...> sig(CallConv::kCallConv);
 		cc.addFunc(sig);
 
 		// Prepare arguments
@@ -66,7 +102,7 @@ public:
 
 		// Create call to target function
 		auto c = cc.call(reinterpret_cast<uint64_t>(targetFn_),
-		                 asmjit::FuncSignatureT<ReturnType, UserDataType, ArgumentType...>(callConv));
+		                 asmjit::FuncSignatureT<ReturnType, UserDataType, ArgumentType...>(CallConv::kCallConv));
 
 		// Pass data
 		c->setArg(0, dataReg);
