@@ -26,6 +26,9 @@
     <Filter Include="main\graphic\d3d9">
       <UniqueIdentifier>{7412b306-9577-443c-b8ca-e2cb1e995199}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hook">
+      <UniqueIdentifier>{42a6ad8f-1cf9-4435-9e82-0e819640e8bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -80,6 +83,9 @@
       <Filter>main\graphic\dxgi</Filter>
     </ClInclude>
     <ClInclude Include="IUnknownPtr.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="ApiHook.h">
       <Filter>util</Filter>
     </ClInclude>
     <ClInclude Include="FunctionWrapper.h">

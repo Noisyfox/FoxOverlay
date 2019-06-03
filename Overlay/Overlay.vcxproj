@@ -176,6 +176,7 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApiHook.h" />
     <ClInclude Include="D3D11Hook.h" />
     <ClInclude Include="DXGIHook.h" />
     <ClInclude Include="DXGISwapChainHook.h" />

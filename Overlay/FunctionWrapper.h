@@ -56,6 +56,7 @@ template <
 >
 class FuncWrapper
 {
+public:
 	using TargetFuncType = typename FuncType<CallConv, UserDataType, ReturnType, ArgumentType...>::TargetFuncType;
 	using WrappedFuncType = typename FuncType<CallConv, UserDataType, ReturnType, ArgumentType...>::WrappedFuncType;
 

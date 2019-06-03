@@ -97,6 +97,17 @@ public:
 		return &ptr_;
 	}
 
+	template <class U>
+	HRESULT queryInterface(IUnknownPtr<U>& dest) const
+	{
+		if (ptr_ == nullptr)
+		{
+			return E_POINTER;
+		}
+
+		return ptr_->QueryInterface(__uuidof(U), reinterpret_cast<void**>(dest.reset().underlyingAddress()));
+	}
+
 	IUnknownPtr& reset()
 	{
 		if (ptr_ != nullptr)
