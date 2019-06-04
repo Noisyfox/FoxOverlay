@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <functional>
 
 #define ASMJIT_STATIC
 #include <asmjit/asmjit.h>
@@ -159,5 +160,72 @@ public:
 	WrappedFuncType func() const
 	{
 		return wrappedFn_;
+	}
+};
+
+
+template <
+	typename CallConv,
+	typename Wrapper,
+	typename ReturnType,
+	typename... ArgumentType
+>
+struct ForwardFunc
+{
+	// Don't provide anything if not specialized.
+};
+
+#define FUNC_WRAPPER_DEFINE_FORWARD_FUNC(T, CALL_CONV) \
+	template<typename Wrapper, typename ReturnType, typename... ArgumentType> \
+	struct ForwardFunc<T, Wrapper, ReturnType, ArgumentType...> \
+	{ \
+		static ReturnType CALL_CONV forward_call(Wrapper wrapper, ArgumentType... args) { \
+			return wrapper->forward_call(std::forward<ArgumentType>(args)...); \
+		} \
+	}
+
+FUNC_WRAPPER_DEFINE_FORWARD_FUNC(CallingConvs::kCdecl, __cdecl);
+
+FUNC_WRAPPER_DEFINE_FORWARD_FUNC(CallingConvs::kStdcall, __stdcall);
+
+#undef FUNC_WRAPPER_DEFINE_FORWARD_FUNC
+
+
+template <
+	typename CallConv,
+	typename ClassType,
+	typename ReturnType,
+	typename... ArgumentType
+>
+class MemberFuncWrapper
+{
+private:
+	ClassType* targetInstance_;
+	std::function<ReturnType(ClassType*, ArgumentType ...)> targetFunc_;
+
+	using SelfType = MemberFuncWrapper<CallConv, ClassType, ReturnType, ArgumentType...>;
+	using ForwardFuncType = ForwardFunc<CallConv, SelfType*, ReturnType, ArgumentType...>;
+	using LowerWrapperType = FuncWrapper<CallConv, SelfType*, ReturnType, ArgumentType...>;
+
+	LowerWrapperType lowerWrapper_;
+
+public:
+	MemberFuncWrapper(ClassType* targetInstance,
+	                  std::function<ReturnType(ClassType*, ArgumentType ...)> targetFunction) :
+		targetInstance_(targetInstance),
+		targetFunc_(std::move(targetFunction)),
+		lowerWrapper_(ForwardFuncType::forward_call)
+	{
+		lowerWrapper_.data(this);
+	}
+
+	ReturnType forward_call(ArgumentType ... args)
+	{
+		return targetFunc_(targetInstance_, std::forward<ArgumentType>(args)...);
+	}
+
+	typename LowerWrapperType::WrappedFuncType func() const
+	{
+		return lowerWrapper_.func();
 	}
 };
