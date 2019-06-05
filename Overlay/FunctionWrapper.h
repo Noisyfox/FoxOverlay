@@ -210,6 +210,8 @@ private:
 	LowerWrapperType lowerWrapper_;
 
 public:
+	using ExposedFuncType = typename LowerWrapperType::WrappedFuncType;
+
 	MemberFuncWrapper(ClassType* targetInstance,
 	                  std::function<ReturnType(ClassType*, ArgumentType ...)> targetFunction) :
 		targetInstance_(targetInstance),
@@ -224,7 +226,7 @@ public:
 		return targetFunc_(targetInstance_, std::forward<ArgumentType>(args)...);
 	}
 
-	typename LowerWrapperType::WrappedFuncType func() const
+	ExposedFuncType func() const
 	{
 		return lowerWrapper_.func();
 	}
